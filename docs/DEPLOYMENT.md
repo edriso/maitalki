@@ -2,7 +2,7 @@
 
 Production URL: `https://edriso.github.io/maitalki/`
 
-Every push to `main` triggers `.github/workflows/deploy.yml`. The job uses Node 22, installs the lockfile with `npm ci`, runs the full `npm run check` gate, uploads `dist`, and deploys through the official GitHub Pages actions.
+Every push to `main` triggers `.github/workflows/deploy.yml`. The job uses Node 24, installs the lockfile with `npm ci`, runs the full `npm run check` gate, uploads `dist`, and deploys through the official GitHub Pages actions.
 
 ## One-time GitHub setup
 
