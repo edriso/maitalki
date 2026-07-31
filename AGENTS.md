@@ -15,6 +15,7 @@ MaiTalki is a small, personal speaking-practice app. Protect its focus: every fe
 - Use strict TypeScript and semantic HTML. Controls must be keyboard accessible and usable at 320 CSS px and 200% zoom.
 - Never claim to score pronunciation or remove an accent. Prefer “clearer,” “more natural,” and “speaking practice.”
 - Stress cannot be conveyed by color alone; preserve capitals, weight, arrows, slashes, or explanatory text.
+- Use `--font-ui` for controls and reading text and `--font-display` only for headings. Do not introduce another font family without a measured readability need.
 - Recording must remain optional and local. Never autoplay audio or upload a recording.
 - Maintain both themes, WCAG AA contrast, visible focus, and `prefers-reduced-motion` support.
 - Keep daily practice below ten minutes and make completion a stopping point, not a guilt mechanic.

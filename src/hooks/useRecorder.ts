@@ -10,7 +10,14 @@ export function useRecorder() {
 
   useEffect(() => {
     if (status !== 'recording') return;
-    const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
+    const timer = window.setInterval(() => setSeconds((value) => {
+      const next = value + 1;
+      if (next >= 120 && recorderRef.current?.state === 'recording') {
+        recorderRef.current.stop();
+        return 120;
+      }
+      return next;
+    }), 1000);
     return () => window.clearInterval(timer);
   }, [status]);
 

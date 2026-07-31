@@ -63,7 +63,7 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
           <p className="prompt compact">{drill.prompt}</p>
           <div className={`recorder ${recorder.status}`}>
             <div className="record-orbit"><span>{recorder.status === 'recording' ? `${recorder.seconds}s` : <Mic />}</span></div>
-            {recorder.status === 'idle' && <><h3>Record your first take</h3><p>It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={recorder.start}><Mic /> Start recording</button></>}
+            {recorder.status === 'idle' && <><h3>Record your first take</h3><p>Up to two minutes. It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={recorder.start}><Mic /> Start recording</button></>}
             {recorder.status === 'recording' && <><h3>Recording…</h3><p>Finish the thought. A clean pause is allowed.</p><button className="stop-button" onClick={recorder.stop}><CircleStop /> Stop</button></>}
             {recorder.status === 'ready' && <><h3>Listen for one improvement</h3>{recorder.audioUrl && <audio controls src={recorder.audioUrl}>Your browser does not support audio playback.</audio>}<button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Record again</button></>}
             {recorder.status === 'denied' && <><h3>Recording is unavailable</h3><p>Allow microphone access, or use your phone’s recorder. You can still complete the practice.</p><button className="secondary-button" onClick={recorder.start}><Mic /> Try again</button></>}

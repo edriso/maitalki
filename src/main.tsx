@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import '@fontsource-variable/dm-sans';
-import '@fontsource-variable/manrope';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/manrope/wght.css';
 import App from './App';
 import './styles.css';
 

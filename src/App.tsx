@@ -1,4 +1,4 @@
-import { BookOpen, Dumbbell, Library, Menu, X } from 'lucide-react';
+import { BookOpen, Dumbbell, Library } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Brand } from './components/Brand';
 import { NoteDialog } from './components/NoteDialog';
@@ -31,7 +31,6 @@ const initialTheme = (): 'light' | 'dark' => {
 export default function App() {
   const [view, setView] = useState<View>(initialView);
   const [theme, setTheme] = useState<'light' | 'dark'>(initialTheme);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [openNote, setOpenNote] = useState<PracticeNote>();
   const { progress, completeToday, toggleFavorite } = useLocalProgress();
   const dailyDrill = getDailyDrill();
@@ -51,8 +50,7 @@ export default function App() {
   const navigate = (next: View) => {
     window.location.hash = next;
     setView(next);
-    setMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   return (
@@ -61,9 +59,8 @@ export default function App() {
       <header className="topbar">
         <button className="brand-button" onClick={() => navigate('today')}><Brand /></button>
         <nav className="desktop-nav" aria-label="Main navigation">{views.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id)}>{item.label}</button>)}</nav>
-        <div className="header-actions"><ThemeToggle theme={theme} onToggle={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} /><button className="menu-button icon-button" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle menu" aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button></div>
+        <div className="header-actions"><ThemeToggle theme={theme} onToggle={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} /></div>
       </header>
-      {menuOpen && <nav className="mobile-menu" aria-label="Mobile navigation">{views.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id)}><item.icon />{item.label}</button>)}</nav>}
 
       {view === 'today' && <TodayScreen drill={dailyDrill} completed={completed} sessions={progress.completedSessions} onComplete={completeToday} />}
       {view === 'library' && <LibraryScreen favorites={progress.favorites} onFavorite={toggleFavorite} onOpen={setOpenNote} />}
