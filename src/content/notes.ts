@@ -110,9 +110,9 @@ export const notes: PracticeNote[] = [
     id: 'th', category: 'Sounds', priority: 'Next', title: 'Make TH visible',
     cue: 'Tongue lightly between the teeth; let air pass.',
     rule: 'Use airflow without a full stop. Add voice for /ð/ in this; keep it voiceless for /θ/ in think.',
-    why: 'A hidden tongue can turn thin into fin or bath into bass.',
+    why: 'A hidden tongue can turn thin into fin or path into pass.',
     examples: [
-      { after: 'thin / fin · bath / bass · mouth / mouse' },
+      { after: 'thin / fin · path / pass · mouth / mouse' },
       { after: 'I think this is worth three months of work.' },
     ],
     drill: 'Watch in a mirror. Hold TH for one second, then shorten it inside each example sentence.',

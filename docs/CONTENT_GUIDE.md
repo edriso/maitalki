@@ -43,6 +43,8 @@ Add an object to `src/content/notes.ts` with:
 
 Use capitals for stress, `/` for thought-group boundaries, `↗` for continuation, and `↘` for a final fall. Include plain-language explanation so formatting is never the only cue.
 
+Examples are also spoken aloud, so avoid words a listener or a voice could read two ways (bass, read, lead, live). Use an unambiguous word that shows the same point.
+
 ## 4. Add a daily drill only when useful
 
 Daily drills in `src/content/drills.ts` must take ten minutes or less and contain:
