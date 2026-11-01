@@ -9,12 +9,13 @@ Live site: [edriso.github.io/maitalki](https://edriso.github.io/maitalki/)
 - Rotates a complete 6–8 minute practice each day
 - Guides planning with three bullets instead of a script
 - Records private speaking takes in the browser for honest A/B listening
+- Plays natural American model audio for warm-ups, model answers, and note examples, with a slower option and two voices
 - Organizes lesson notes by impact: Core, Next, and Polish
 - Searches and saves notes locally
 - Turns the original sales notes into a five-step GAP conversation playbook
 - Supports light/dark themes, keyboard navigation, reduced motion, and small screens
 
-No account or server is involved. Theme, saved notes, and completion history stay in local storage. Audio recordings are temporary object URLs and are never uploaded.
+No account or server is involved. Theme, voice, saved notes, and completion history stay in local storage. Your recordings are temporary object URLs and are never uploaded. Model audio is pre-generated MP3 files served with the site; nothing plays until you press Listen.
 
 ## Start locally
 
@@ -33,15 +34,33 @@ npm run check
 
 This runs ESLint, Vitest, TypeScript, and the production Vite build.
 
+### Model audio (ElevenLabs)
+
+The generated clips are committed, so you only need this after changing drills or note examples.
+
+1. Create an ElevenLabs API key restricted to **Text to Speech** and **Voices (read)**, with a credit limit. Copy the secret that starts with `sk_`, not the key ID.
+2. Copy `.env.example` to `.env.local` and set `ELEVENLABS_API_KEY`.
+3. Generate, then verify:
+
+```bash
+npm run audio -- --dry-run   # what would be generated, and the credit cost
+npm run audio                # generate only new or changed lines
+npm run check
+```
+
+`.env.local` is git-ignored. The key is used by the local script only and never ships to the site, so never prefix it with `VITE_`. Voices live in `src/content/voices.ts`; `npm run audio -- --audition` writes a short sample per voice to `.audio-auditions/` for comparing before a full run. Model audio is generated with [ElevenLabs](https://elevenlabs.io).
+
 ## Project map
 
 ```text
 src/
   components/   Reusable UI and note presentation
   content/      Typed practice notes and daily drills
-  hooks/        Local progress and private recording
+  hooks/        Local progress, private recording, and model audio playback
   screens/      Practice, notes library, and playbook
   test/         Browser test setup
+public/audio/   Generated model audio (one folder per voice)
+scripts/        Local audio generation (ElevenLabs)
 docs/           Architecture, curriculum, content, and deployment
 ```
 

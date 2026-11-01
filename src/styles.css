@@ -97,7 +97,8 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .step-content h2 { max-width: 650px; margin: 0; font-family: var(--font-display); font-size: clamp(30px, 4vw, 45px); line-height: 1.12; font-weight: 560; letter-spacing: -.035em; text-wrap: balance; }
 .step-lede { max-width: 600px; margin: 14px 0 32px; color: var(--muted); line-height: 1.65; }
 .warmup-lines { margin: 28px 0; border-top: 1px solid var(--line); }
-.warmup-lines p { margin: 0; padding: 22px 0; border-bottom: 1px solid var(--line); font-family: var(--font-display); font-size: clamp(19px, 3vw, 27px); line-height: 1.5; letter-spacing: -.015em; }
+.warmup-line { padding: 22px 0 18px; border-bottom: 1px solid var(--line); }
+.warmup-line p { margin: 0; font-family: var(--font-display); font-size: clamp(19px, 3vw, 27px); line-height: 1.5; letter-spacing: -.015em; overflow-wrap: anywhere; }
 .coach-note { padding: 16px 18px; border-radius: 16px; display: flex; align-items: flex-start; gap: 12px; background: color-mix(in srgb, var(--accent) 18%, var(--surface)); }
 .coach-note svg { margin-top: 2px; color: var(--accent-strong); }
 .coach-note p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -111,6 +112,7 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .outline-grid textarea::placeholder { color: var(--faint); }
 .text-button { margin: 20px 0 0; padding: 0 0 3px; border: 0; border-bottom: 1px solid currentColor; background: none; color: var(--muted); font-size: 13px; cursor: pointer; }
 .model-answer { margin: 20px 0 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 15px; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.model-answer blockquote { margin: 0; }
 .recorder { min-height: 300px; padding: 35px 20px; border: 1px dashed var(--line-strong); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .record-orbit { width: 78px; height: 78px; margin-bottom: 20px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 20%, var(--surface)); }
 .record-orbit > span { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 700; }
@@ -180,7 +182,7 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .note-dialog h2 { margin: 14px 0 7px; font-family: var(--font-display); font-size: clamp(33px, 6vw, 51px); line-height: 1.06; font-weight: 570; letter-spacing: -.04em; text-wrap: balance; }
 .dialog-cue { margin: 0 0 34px; color: var(--muted); font-size: 17px; }
 .note-dialog section { margin: 27px 0; }
-.note-dialog section > h3 { margin: 0 0 7px; color: var(--faint); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.note-dialog section > h3, .note-dialog .section-heading h3 { margin: 0 0 7px; color: var(--faint); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
 .note-dialog section > p { margin: 0; color: var(--muted); line-height: 1.68; }
 .example-list { display: grid; gap: 9px; }
 .example { padding: 15px 17px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-strong); }
@@ -240,6 +242,27 @@ footer > span { justify-self: end; }
 
 @keyframes enter { from { opacity: 0; transform: translateY(7px); } }
 @keyframes pulse { 50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 8%, transparent); } }
+
+/* Model audio */
+.listen-controls { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.listen-button { min-height: 40px; padding: 8px 15px; border: 1px solid var(--line-strong); border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; background: var(--surface); color: var(--ink); font-family: var(--font-ui); font-size: 13px; font-weight: 700; cursor: pointer; }
+.listen-button svg { width: 16px; height: 16px; flex: none; }
+.listen-button:hover { border-color: var(--accent-strong); background: var(--surface-strong); }
+.listen-button.playing { border-color: var(--accent-strong); background: color-mix(in srgb, var(--accent) 24%, var(--surface)); }
+.listen-error { flex-basis: 100%; color: var(--muted); font-size: 12px; }
+.voice-picker { margin: 0 0 4px; padding: 0; border: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.voice-picker legend { float: left; margin-right: 6px; color: var(--muted); font-size: 12px; font-weight: 650; }
+.voice-picker label { min-height: 36px; padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; display: inline-flex; align-items: center; color: var(--muted); font-size: 13px; font-weight: 650; cursor: pointer; }
+.voice-picker label:hover { border-color: var(--line-strong); }
+.voice-picker label.active { border-color: var(--accent-strong); background: color-mix(in srgb, var(--accent) 22%, var(--surface)); color: var(--ink); font-weight: 750; }
+.voice-picker label.active::before { content: '✓'; margin-right: 6px; }
+.voice-picker label:has(input:focus-visible) { outline: 3px solid color-mix(in srgb, var(--blue) 65%, transparent); outline-offset: 3px; }
+.note-dialog .section-heading { margin-bottom: 9px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.note-dialog .section-heading h3 { margin: 0; }
+.example .listen-controls { margin-top: 10px; }
+.compare-model { margin: 0 0 18px; display: flex; flex-direction: column; align-items: center; }
+.recorder .compare-model p { margin: 0 0 2px; }
+.compare-model .listen-controls { justify-content: center; }
 
 @media (max-width: 900px) {
   .notes-grid { grid-template-columns: 1fr 1fr; }

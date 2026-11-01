@@ -1,6 +1,8 @@
 import { Check, ChevronLeft, ChevronRight, CircleStop, Mic, RotateCcw, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import type { DailyDrill } from '../content/types';
+import { ListenControls } from '../components/ListenControls';
+import { VoicePicker } from '../components/VoicePicker';
 import { useRecorder } from '../hooks/useRecorder';
 
 interface Props {
@@ -40,8 +42,12 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
         {step === 0 && <div className="step-content">
           <span className="step-kicker">01 · Warm up</span>
           <h2>Put the beat in your mouth.</h2>
-          <p className="step-lede">Read each line three times. Slow first, then natural. Tap the capitalized words.</p>
-          <div className="warmup-lines">{drill.warmup.map((line) => <p key={line}>{line}</p>)}</div>
+          <p className="step-lede">Listen once if it helps. Then read each line three times: slow first, then natural. Tap the capitalized words.</p>
+          <VoicePicker />
+          <div className="warmup-lines">{drill.warmup.map((line, index) => <div className="warmup-line" key={line}>
+            <p>{line}</p>
+            <ListenControls text={line} label={`warm-up line ${index + 1}`} />
+          </div>)}</div>
           <div className="coach-note"><Sparkles /><p><strong>Keep this in mind</strong>Clarity before speed. Let the important words carry the sentence.</p></div>
         </div>}
 
@@ -54,7 +60,7 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
             <textarea value={outline[index]} onChange={(event) => setOutline((items) => items.map((item, itemIndex) => itemIndex === index ? event.target.value : item))} placeholder="A few words, not a script" rows={2} />
           </label>)}</div>
           <button className="text-button" onClick={() => setShowModel((value) => !value)} aria-expanded={showModel}>{showModel ? 'Hide' : 'Compare with'} a model answer</button>
-          {showModel && <blockquote className="model-answer">{drill.model}</blockquote>}
+          {showModel && <div className="model-answer"><blockquote>{drill.model}</blockquote><ListenControls text={drill.model} label="the model answer" /></div>}
         </div>}
 
         {step === 2 && <div className="step-content speak-step">
@@ -65,7 +71,7 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
             <div className="record-orbit"><span>{recorder.status === 'recording' ? `${recorder.seconds}s` : <Mic />}</span></div>
             {recorder.status === 'idle' && <><h3>Record your first take</h3><p>Up to two minutes. It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={recorder.start}><Mic /> Start recording</button></>}
             {recorder.status === 'recording' && <><h3>Recording…</h3><p>Finish the thought. A clean pause is allowed.</p><button className="stop-button" onClick={recorder.stop}><CircleStop /> Stop</button></>}
-            {recorder.status === 'ready' && <><h3>Listen for one improvement</h3>{recorder.audioUrl && <audio controls src={recorder.audioUrl}>Your browser does not support audio playback.</audio>}<button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Record again</button></>}
+            {recorder.status === 'ready' && <><h3>Listen for one improvement</h3>{recorder.audioUrl && <audio controls src={recorder.audioUrl}>Your browser does not support audio playback.</audio>}<div className="compare-model"><p>Compare your rhythm with the model, then record one better take.</p><ListenControls text={drill.model} label="the model answer" /></div><button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Record again</button></>}
             {recorder.status === 'denied' && <><h3>Recording is unavailable</h3><p>Allow microphone access, or use your phone’s recorder. You can still complete the practice.</p><button className="secondary-button" onClick={recorder.start}><Mic /> Try again</button></>}
           </div>
         </div>}

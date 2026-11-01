@@ -17,6 +17,7 @@ MaiTalki is a small, personal speaking-practice app. Protect its focus: every fe
 - Stress cannot be conveyed by color alone; preserve capitals, weight, arrows, slashes, or explanatory text.
 - Use `--font-ui` for controls and reading text and `--font-display` only for headings. Do not introduce another font family without a measured readability need.
 - Recording must remain optional and local. Never autoplay audio or upload a recording.
+- Model audio is pre-generated with `npm run audio` and committed to `public/audio`. Never call ElevenLabs from the browser or CI, and never expose the API key with a `VITE_` prefix. After editing drills or note examples, regenerate audio before committing.
 - Maintain both themes, WCAG AA contrast, visible focus, and `prefers-reduced-motion` support.
 - Keep daily practice below ten minutes and make completion a stopping point, not a guilt mechanic.
 - Run `npm run check` before every commit.

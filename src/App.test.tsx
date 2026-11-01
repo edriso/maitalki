@@ -23,6 +23,17 @@ describe('MaiTalki app', () => {
     expect(screen.queryByText('Keep the American R clear')).not.toBeInTheDocument();
   });
 
+  it('offers model audio for warm-ups and note examples', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getByRole('button', { name: 'Listen to warm-up line 1' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Model voice' })).toBeInTheDocument();
+    await user.click(screen.getAllByRole('button', { name: 'Notes' })[0]);
+    await user.click(screen.getByRole('button', { name: /^Stress the message.*Open note/ }));
+    expect(screen.getByRole('button', { name: 'Listen to example 1' })).toBeInTheDocument();
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+
   it('persists the selected theme', async () => {
     const user = userEvent.setup();
     render(<App />);

@@ -55,7 +55,18 @@ Daily drills in `src/content/drills.ts` must take ten minutes or less and contai
 
 Favor rotating skills over adding many variations of the same prompt.
 
-## 5. Verify
+## 5. Regenerate model audio
+
+Every drill warm-up, model answer, and note example has model audio. After adding or editing one, run:
+
+```bash
+npm run audio -- --dry-run
+npm run audio
+```
+
+Only new or changed lines are generated. Notation is converted to plain speech automatically; if a new line uses unusual notation, add a case to `src/content/speech.test.ts` and check `toSpeechText` reads it naturally. Listen to each new clip once before committing.
+
+## 6. Verify
 
 Run:
 

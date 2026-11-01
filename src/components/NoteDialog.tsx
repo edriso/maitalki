@@ -1,6 +1,8 @@
 import { Bookmark, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import type { PracticeNote } from '../content/types';
+import { ListenControls } from './ListenControls';
+import { VoicePicker } from './VoicePicker';
 
 interface Props {
   note?: PracticeNote;
@@ -32,10 +34,11 @@ export function NoteDialog({ note, favorite, onFavorite, onClose }: Props) {
         <p className="dialog-cue">{note.cue}</p>
         <section><h3>The rule</h3><p>{note.rule}</p></section>
         <section><h3>Why it matters</h3><p>{note.why}</p></section>
-        <section><h3>Use it</h3><div className="example-list">{note.examples.map((example, index) => <div className="example" key={index}>
+        <section><div className="section-heading"><h3>Use it</h3><VoicePicker /></div><div className="example-list">{note.examples.map((example, index) => <div className="example" key={index}>
           {example.label && <small>{example.label}</small>}
           {example.before && <p className="before"><span>Instead</span>{example.before}</p>}
           <p className="after"><span>{example.before ? 'Try' : 'Say'}</span>{example.after}</p>
+          <ListenControls text={example.after} label={`example ${index + 1}`} />
           {example.note && <small>{example.note}</small>}
         </div>)}</div></section>
         <section className="drill-box"><small>Practice now</small><p>{note.drill}</p></section>

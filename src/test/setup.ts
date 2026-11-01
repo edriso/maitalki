@@ -31,3 +31,7 @@ HTMLDialogElement.prototype.close = function close() {
   this.removeAttribute('open');
   this.dispatchEvent(new Event('close'));
 };
+
+// jsdom does not implement media playback.
+Object.defineProperty(HTMLMediaElement.prototype, 'play', { configurable: true, writable: true, value: vi.fn().mockResolvedValue(undefined) });
+Object.defineProperty(HTMLMediaElement.prototype, 'pause', { configurable: true, writable: true, value: vi.fn() });
