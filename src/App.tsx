@@ -65,7 +65,7 @@ export default function App() {
         <div className="header-actions"><ThemeToggle theme={theme} onToggle={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} /></div>
       </header>
 
-      {view === 'today' && <TodayScreen drill={dailyDrill} completed={completed} sessions={progress.completedSessions} onComplete={completeToday} />}
+      {view === 'today' && <TodayScreen drill={dailyDrill} completed={completed} sessions={progress.completedSessions} favorites={progress.favorites} onComplete={completeToday} onOpenNote={setOpenNote} />}
       {view === 'ear' && <EarScreen onOpenNote={(id) => setOpenNote(notes.find((note) => note.id === id))} />}
       {view === 'library' && <LibraryScreen favorites={progress.favorites} onFavorite={toggleFavorite} onOpen={setOpenNote} />}
       {view === 'playbook' && <PlaybookScreen />}

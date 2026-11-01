@@ -20,7 +20,7 @@ npm run check
 npm run preview
 ```
 
-Open the preview URL with `/maitalki/`. Verify all three hash views, a direct refresh, both themes, a saved note, model audio (Listen, Slower, and switching voices), denied microphone access, and a completed practice.
+Open the preview URL with `/maitalki/`. Verify all four hash views, a direct refresh, both themes, a saved note, model audio (Listen, Slower, and switching voices), an ear-training round, shadowing, two recorded takes, denied microphone access, and a completed practice.
 
 ## Rename or custom domain
 
@@ -32,5 +32,7 @@ If the repository name changes, update:
 - URLs in this document and `README.md`.
 
 Model audio in `public/audio` is generated locally (`npm run audio`) and committed, so CI needs no ElevenLabs key and never calls the API. Vite copies it into `dist`.
+
+The service worker (`public/sw.js`) only registers in production builds, so test offline behavior with `npm run preview`: load the app, reload once, then switch the browser to offline and reload again.
 
 Do not edit or commit generated `dist`. To roll back, revert the offending commit and push; the workflow will redeploy the previous source.

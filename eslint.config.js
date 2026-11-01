@@ -17,4 +17,5 @@ export default tseslint.config(
     },
   },
   { files: ['scripts/**/*.ts', 'vite.config.ts'], languageOptions: { globals: globals.node } },
+  { files: ['public/sw.js'], extends: [js.configs.recommended], languageOptions: { ecmaVersion: 2022, sourceType: 'script', globals: globals.serviceworker } },
 );

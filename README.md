@@ -6,7 +6,7 @@ Live site: [edriso.github.io/maitalki](https://edriso.github.io/maitalki/)
 
 ## What it does
 
-- Rotates a complete 6–8 minute practice each day
+- Rotates a complete 6–8 minute practice each day, with twelve practices across sounds, rhythm, speaking, and sales
 - Guides planning with three bullets instead of a script
 - Records two private takes in the browser so you can compare them with each other and the model
 - Plays natural American model audio for warm-ups, model answers, and note examples, with a slower option and two voices
@@ -15,6 +15,8 @@ Live site: [edriso.github.io/maitalki](https://edriso.github.io/maitalki/)
 - Organizes lesson notes by impact: Core, Next, and Polish
 - Searches and saves notes locally
 - Turns the original sales notes into a five-step GAP conversation playbook
+- Offers one optional saved note to revisit after you finish—never a streak or a guilt prompt
+- Works offline after the first visit: the app and any audio you have played are cached on your device
 - Supports light/dark themes, keyboard navigation, reduced motion, and small screens
 
 No account or server is involved. Theme, voice, saved notes, ear-training results, and completion history stay in local storage. Your recordings are temporary object URLs and are never uploaded. Model audio is pre-generated MP3 files served with the site; nothing plays until you press Listen.

@@ -42,6 +42,18 @@ describe('MaiTalki app', () => {
     expect(window.location.hash).toBe('#ear');
   });
 
+  it('offers one optional note to revisit after finishing', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: /4\s*Review/ }));
+    expect(screen.queryByText(/Optional · one minute/)).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Finish practice/ }));
+    expect(screen.getByText('Done for today.')).toBeInTheDocument();
+    expect(screen.getByText(/Optional · one minute/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Open the full note/ }));
+    expect(document.querySelector('dialog[open]')).not.toBeNull();
+  });
+
   it('persists the selected theme', async () => {
     const user = userEvent.setup();
     render(<App />);

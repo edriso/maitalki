@@ -1,7 +1,10 @@
 import { Check, ChevronLeft, ChevronRight, CircleStop, Mic, RotateCcw, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import type { DailyDrill } from '../content/types';
+import { notes } from '../content/notes';
+import { pickReviewNote } from '../content/review';
+import type { DailyDrill, PracticeNote } from '../content/types';
 import { ListenControls } from '../components/ListenControls';
+import { ReviewNote } from '../components/ReviewNote';
 import { ShadowCoach } from '../components/ShadowCoach';
 import { VoicePicker } from '../components/VoicePicker';
 import { pauseOtherMedia, stopClip } from '../hooks/useModelAudio';
@@ -11,17 +14,20 @@ interface Props {
   drill: DailyDrill;
   completed: boolean;
   sessions: number;
+  favorites: string[];
   onComplete: () => void;
+  onOpenNote: (note: PracticeNote) => void;
 }
 
 const stepLabels = ['Set up', 'Shape it', 'Say it', 'Review'];
 
-export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
+export function TodayScreen({ drill, completed, sessions, favorites, onComplete, onOpenNote }: Props) {
   const [step, setStep] = useState(completed ? 3 : 0);
   const [outline, setOutline] = useState(['', '', '']);
   const [showModel, setShowModel] = useState(false);
   const [checks, setChecks] = useState<boolean[]>(drill.checklist.map(() => false));
   const recorder = useRecorder();
+  const reviewNote = pickReviewNote(notes, favorites, drill.category);
 
   const next = () => setStep((value) => Math.min(3, value + 1));
   const back = () => setStep((value) => Math.max(0, value - 1));
@@ -99,7 +105,10 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
             <input type="checkbox" checked={checks[index]} onChange={() => setChecks((items) => items.map((checked, itemIndex) => itemIndex === index ? !checked : checked))} />
             <span><Check /></span>{item}
           </label>)}</div>
-          {!completed ? <button className="primary-button finish-button" onClick={finish}><Check /> Finish practice</button> : <div className="complete-note"><Check /><p><strong>Done for today.</strong>One focused repetition is enough. Come back tomorrow for a different skill.</p></div>}
+          {!completed ? <button className="primary-button finish-button" onClick={finish}><Check /> Finish practice</button> : <>
+            <div className="complete-note"><Check /><p><strong>Done for today.</strong>One focused repetition is enough. Come back tomorrow for a different skill.</p></div>
+            {reviewNote && <ReviewNote note={reviewNote} saved={favorites.includes(reviewNote.id)} onOpen={() => onOpenNote(reviewNote)} />}
+          </>}
         </div>}
       </section>
 

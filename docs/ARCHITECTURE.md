@@ -18,6 +18,7 @@ content → screens → components
 - `src/content/drills.ts` is the source of truth for rotating daily practice.
 - `useLocalProgress` owns saved notes, completed days, and session count.
 - `src/content/contrasts.ts` is the source of truth for ear-training minimal pairs.
+- `src/content/review.ts` picks the optional note to revisit after practice: saved notes first, rotating daily, else a Core note from the day’s category.
 - `useRecorder` owns the optional MediaRecorder lifecycle and up to two temporary takes; a third recording replaces take 2.
 - `earTraining.ts` builds ear-training rounds (every pair once before repeats, random word and voice) and stores the last result per contrast.
 - `ShadowCoach` runs three shadowing rounds on top of the shared model-audio player and stops cleanly when interrupted.
@@ -56,6 +57,17 @@ drills.ts + notes.ts ─ toSpeechText ─▶ scripts/generate-audio.ts ─▶ El
 `maitalki.theme` contains `light` or `dark`. `maitalki.ear.v1` maps a contrast id to its last `{ correct, total, date }`; malformed entries are ignored. `maitalki.voice` contains a voice key from `src/content/voices.ts`; unknown values fall back to the first voice. Recordings are Blob URLs held only in memory; leaving or refreshing the page removes them.
 
 Any schema change needs a migration or a new versioned key plus tests. Never silently reinterpret old data.
+
+## Offline
+
+`public/sw.js` is a small hand-written service worker, registered only in production builds:
+
+- Pages are network first, so deploys appear immediately; the cached page is the offline fallback.
+- `assets/` and `audio/` files are cache first because their names contain content hashes. When a new build of an asset is cached, older builds of the same file are deleted.
+- Audio Range requests (Safari always sends them) are answered with `206` from the cached file.
+- Model clips are cached as they are played; nothing downloads in the background. Recordings are `blob:` URLs and never touch the cache.
+
+Bump `CACHE` in `sw.js` only if the caching strategy itself changes.
 
 ## Deliberate constraints
 

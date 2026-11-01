@@ -65,6 +65,38 @@ export const drills: DailyDrill[] = [
     model: 'I want to respect your time. / We agreed that slow reporting is delaying client decisions. / The next useful step is a 20-minute workflow review with your project lead. / Would Tuesday afternoon work?',
     checklist: ['My recap was accurate', 'I proposed only one action', 'The owner was clear', 'I asked for a date'],
   },
+  {
+    id: 'remote-standup', title: 'Give a clear stand-up', focus: 'American R in work words', category: 'Sounds', minutes: 6,
+    warmup: ['EARly / EARlier / the EARlier REPORT', 'The reMOTE team is READY for the reLEASE.'],
+    prompt: 'Give a 30-second update to a remote team: what you reviewed, what is ready, and what you need.',
+    outline: ['What you reviewed earlier', 'What is ready now', 'One clear request'],
+    model: 'Earlier this morning / I reviewed the report for the remote team. / The error rate is lower / and the release is ready. / I just need one more review from our developer.',
+    checklist: ['My tongue stayed back on every R', 'I did not rush “earlier” or “error”', 'I used clear thought groups', 'My request was specific'],
+  },
+  {
+    id: 'correct-a-detail', title: 'Correct a detail politely', focus: 'Stress the correction', category: 'Rhythm', minutes: 6,
+    warmup: ['The meeting is on TUESDAY / not THURSDAY.', 'I sent the FINAL file / not the DRAFT.'],
+    prompt: 'A client confirms the wrong launch date and the wrong budget scope. Correct both details without sounding defensive.',
+    outline: ['Thank them for confirming', 'Correct the first detail', 'Correct the second, then check'],
+    model: 'Thanks for confirming. / Just one small correction: / the launch is on the FIFTEENTH / not the fifth. / And the budget we agreed covers the FIRST phase / not the whole project. / Does that match your notes?',
+    checklist: ['I stressed only the corrected words', 'I sounded helpful, not defensive', 'Each correction was one sentence', 'I ended with a check'],
+  },
+  {
+    id: 'pause-not-fill', title: 'Pause instead of filling', focus: 'Deliberate pauses, no fillers', category: 'Speaking', minutes: 7,
+    warmup: ['Give me a MOMENT / to think about THAT.', 'That’s a good QUESTION. / Here’s how I SEE it.'],
+    prompt: 'In an interview you are asked, “What is your biggest weakness?” Answer honestly in under 45 seconds.',
+    outline: ['One real weakness', 'What you do about it now', 'A recent sign of progress'],
+    model: 'That’s a good question. / I used to say yes to too many tasks at once. / Now I plan my week every Monday / and agree on priorities before I commit. / Last month that helped me deliver two projects on time / without working late.',
+    checklist: ['I paused instead of saying “um”', 'I avoided “like” and “really”', 'I named only one weakness', 'My example was concrete'],
+  },
+  {
+    id: 'confirm-the-need', title: 'Rewind and confirm', focus: 'Summarize, then check', category: 'Sales', minutes: 7,
+    warmup: ['What I’m HEARING is / SPEED matters MORE than COST.', 'Have I underSTOOD that CORRECTLY?'],
+    prompt: 'A prospect says their team copies data between two tools for hours before every client report. Summarize their need and check it.',
+    outline: ['Their current problem', 'The outcome they want', 'A confirming question'],
+    model: 'What I’m hearing is / your team loses several hours / copying data between two tools before each report. / What you want is one reliable source / so reports are ready without the manual step. / Is that right?',
+    checklist: ['I used their words, not mine', 'I named the problem and the outcome', 'I did not pitch yet', 'I ended with a real question'],
+  },
 ];
 
 export const getDailyDrill = (date = new Date()) => {
