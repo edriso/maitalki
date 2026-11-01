@@ -35,6 +35,7 @@ export default function App() {
   const [view, setView] = useState<View>(initialView);
   const [theme, setTheme] = useState<'light' | 'dark'>(initialTheme);
   const [openNote, setOpenNote] = useState<PracticeNote>();
+  const [earContrast, setEarContrast] = useState<string>();
   const { progress, completeToday, toggleFavorite } = useLocalProgress();
   const dailyDrill = getDailyDrill();
   const completed = progress.completedDays.includes(localDateKey());
@@ -66,13 +67,13 @@ export default function App() {
       </header>
 
       {view === 'today' && <TodayScreen drill={dailyDrill} completed={completed} sessions={progress.completedSessions} favorites={progress.favorites} onComplete={completeToday} onOpenNote={setOpenNote} />}
-      {view === 'ear' && <EarScreen onOpenNote={(id) => setOpenNote(notes.find((note) => note.id === id))} />}
+      {view === 'ear' && <EarScreen key={earContrast} initialContrastId={earContrast} onOpenNote={(id) => setOpenNote(notes.find((note) => note.id === id))} />}
       {view === 'library' && <LibraryScreen favorites={progress.favorites} onFavorite={toggleFavorite} onOpen={setOpenNote} />}
       {view === 'playbook' && <PlaybookScreen />}
 
       <footer><Brand /><p>Clearer English. Better conversations. A few focused minutes at a time.</p><span>Practice stays on this device.</span></footer>
       <nav className="bottom-nav" aria-label="Main navigation">{views.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id)}><item.icon /><span>{item.label}</span></button>)}</nav>
-      <NoteDialog note={openNote} favorite={openNote ? progress.favorites.includes(openNote.id) : false} onFavorite={() => openNote && toggleFavorite(openNote.id)} onClose={() => setOpenNote(undefined)} />
+      <NoteDialog note={openNote} favorite={openNote ? progress.favorites.includes(openNote.id) : false} onFavorite={() => openNote && toggleFavorite(openNote.id)} onClose={() => setOpenNote(undefined)} onTrainEar={(contrastId) => { setOpenNote(undefined); setEarContrast(contrastId); navigate('ear'); }} />
     </div>
   );
 }

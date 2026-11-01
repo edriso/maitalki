@@ -29,6 +29,13 @@ export function TodayScreen({ drill, completed, sessions, favorites, onComplete,
   const recorder = useRecorder();
   const reviewNote = pickReviewNote(notes, favorites, drill.category);
 
+  // Silence model audio and earlier takes first, so the microphone only hears the learner.
+  const startRecording = () => {
+    stopClip();
+    pauseOtherMedia();
+    void recorder.start();
+  };
+
   const next = () => setStep((value) => Math.min(3, value + 1));
   const back = () => setStep((value) => Math.max(0, value - 1));
   const finish = () => { onComplete(); setStep(3); };
@@ -78,7 +85,7 @@ export function TodayScreen({ drill, completed, sessions, favorites, onComplete,
           <p className="prompt compact">{drill.prompt}</p>
           <div className={`recorder ${recorder.status}`}>
             <div className="record-orbit"><span>{recorder.status === 'recording' ? `${recorder.seconds}s` : <Mic />}</span></div>
-            {recorder.status === 'idle' && <><h3>Record your first take</h3><p>Up to two minutes. It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={recorder.start}><Mic /> Start recording</button></>}
+            {recorder.status === 'idle' && <><h3>Record your first take</h3><p>Up to two minutes. It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={startRecording}><Mic /> Start recording</button></>}
             {recorder.status === 'recording' && <><h3>Recording take {Math.min(recorder.takes.length + 1, maxTakes)}…</h3><p>Finish the thought. A clean pause is allowed.</p><button className="stop-button" onClick={recorder.stop}><CircleStop /> Stop</button></>}
             {recorder.status === 'ready' && <>
               <h3>{recorder.takes.length === 1 ? 'Listen for one improvement' : 'Compare your two takes'}</h3>
@@ -89,11 +96,11 @@ export function TodayScreen({ drill, completed, sessions, favorites, onComplete,
               </div>)}</div>
               <div className="compare-model"><p>The model answer</p><ListenControls text={drill.model} label="the model answer" /></div>
               <div className="take-actions">
-                <button className="primary-button" onClick={recorder.start}><Mic /> {recorder.takes.length === 1 ? 'Record a better take' : 'Re-record take 2'}</button>
+                <button className="primary-button" onClick={startRecording}><Mic /> {recorder.takes.length === 1 ? 'Record a better take' : 'Re-record take 2'}</button>
                 {recorder.takes.length === maxTakes && <button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Start over</button>}
               </div>
             </>}
-            {recorder.status === 'denied' && <><h3>Recording is unavailable</h3><p>Allow microphone access, or use your phone’s recorder. You can still complete the practice.</p><button className="secondary-button" onClick={recorder.start}><Mic /> Try again</button></>}
+            {recorder.status === 'denied' && <><h3>Recording is unavailable</h3><p>Allow microphone access, or use your phone’s recorder. You can still complete the practice.</p><button className="secondary-button" onClick={startRecording}><Mic /> Try again</button></>}
           </div>
         </div>}
 

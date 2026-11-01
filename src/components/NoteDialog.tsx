@@ -1,5 +1,6 @@
-import { Bookmark, X } from 'lucide-react';
+import { Bookmark, Ear, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { soundContrasts } from '../content/contrasts';
 import type { PracticeNote } from '../content/types';
 import { ListenControls } from './ListenControls';
 import { ShadowCoach } from './ShadowCoach';
@@ -10,10 +11,13 @@ interface Props {
   favorite: boolean;
   onFavorite: () => void;
   onClose: () => void;
+  /** Open ear training for a sound contrast taught by this note. */
+  onTrainEar?: (contrastId: string) => void;
 }
 
-export function NoteDialog({ note, favorite, onFavorite, onClose }: Props) {
+export function NoteDialog({ note, favorite, onFavorite, onClose, onTrainEar }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const contrast = note ? soundContrasts.find((item) => item.noteId === note.id) : undefined;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -44,6 +48,10 @@ export function NoteDialog({ note, favorite, onFavorite, onClose }: Props) {
         </div>)}</div>
         <ShadowCoach subject="these examples" lines={note.examples.map((example, index) => ({ text: example.after, label: `example ${index + 1}` }))} /></section>
         <section className="drill-box"><small>Practice now</small><p>{note.drill}</p></section>
+        {contrast && onTrainEar && <section className="ear-link">
+          <p><strong>Can you hear the difference?</strong>Ten quick words with both voices. Hearing it clearly makes it easier to say.</p>
+          <button type="button" className="secondary-button" onClick={() => onTrainEar(contrast.id)}><Ear aria-hidden="true" /> Train your ear: {contrast.label}</button>
+        </section>}
       </div>}
     </dialog>
   );

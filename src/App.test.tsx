@@ -54,6 +54,17 @@ describe('MaiTalki app', () => {
     expect(document.querySelector('dialog[open]')).not.toBeNull();
   });
 
+  it('links a sound note to ear training for that sound', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getAllByRole('button', { name: 'Notes' })[0]);
+    await user.click(screen.getByRole('button', { name: /^CH \/tʃ\/ vs SH.*Open note/ }));
+    await user.click(screen.getByRole('button', { name: 'Train your ear: CH / SH' }));
+    expect(document.querySelector('dialog[open]')).toBeNull();
+    expect(window.location.hash).toBe('#ear');
+    expect(screen.getByRole('radio', { name: /CH \/ SH/ })).toBeChecked();
+  });
+
   it('persists the selected theme', async () => {
     const user = userEvent.setup();
     render(<App />);

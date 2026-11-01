@@ -27,12 +27,14 @@ Open the preview URL with `/maitalki/`. Verify all four hash views, a direct ref
 If the repository name changes, update:
 
 - `base` in `vite.config.ts`;
-- icon and manifest paths in `index.html`;
+- icon, Apple touch icon, and manifest paths in `index.html`;
 - `start_url` and `scope` in `public/manifest.webmanifest`;
 - URLs in this document and `README.md`.
 
 Model audio in `public/audio` is generated locally (`npm run audio`) and committed, so CI needs no ElevenLabs key and never calls the API. Vite copies it into `dist`.
 
 The service worker (`public/sw.js`) only registers in production builds, so test offline behavior with `npm run preview`: load the app, reload once, then switch the browser to offline and reload again.
+
+App icons: `public/icon.svg` is the source. `apple-touch-icon.png` (180 px), `icon-192.png`, and `icon-512.png` are full-bleed square renders of it (no transparency, glyph inside the maskable safe zone); regenerate them if the SVG changes.
 
 Do not edit or commit generated `dist`. To roll back, revert the offending commit and push; the workflow will redeploy the previous source.

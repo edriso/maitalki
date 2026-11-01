@@ -8,11 +8,13 @@ import { stopClip, useModelAudio } from '../hooks/useModelAudio';
 
 interface Props {
   onOpenNote: (noteId: string) => void;
+  /** Contrast to select first, e.g. when arriving from a note. */
+  initialContrastId?: string;
 }
 
-export function EarScreen({ onOpenNote }: Props) {
+export function EarScreen({ onOpenNote, initialContrastId }: Props) {
   const baseId = useId();
-  const [contrastId, setContrastId] = useState(soundContrasts[0].id);
+  const [contrastId, setContrastId] = useState(initialContrastId ?? soundContrasts[0].id);
   const [trials, setTrials] = useState<Trial[]>();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<(0 | 1)[]>([]);

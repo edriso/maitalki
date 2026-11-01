@@ -5,7 +5,10 @@
   --surface-strong: #ffffff;
   --ink: #171812;
   --muted: #686a60;
-  --faint: #96988e;
+  --faint: #6c6e65;
+  --core-text: #5a7115;
+  --blue-text: #4c5ea9;
+  --purple-text: #685694;
   --line: #dad9d1;
   --line-strong: #c4c4ba;
   --accent: #c8ef54;
@@ -31,7 +34,10 @@
   --surface-strong: #1d1f1b;
   --ink: #f2f2eb;
   --muted: #aaaca1;
-  --faint: #777a70;
+  --faint: #86887f;
+  --core-text: color-mix(in srgb, var(--accent-strong) 75%, var(--ink));
+  --blue-text: var(--blue);
+  --purple-text: var(--purple);
   --line: #2d2f2a;
   --line-strong: #41443c;
   --accent: #d0fa59;
@@ -160,11 +166,11 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .note-card-top { padding: 15px 15px 0 19px; display: flex; justify-content: space-between; align-items: center; }
 .meta-row { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .priority { padding: 4px 7px; border-radius: 5px; }
-.p-core { background: color-mix(in srgb, var(--accent) 25%, transparent); color: color-mix(in srgb, var(--accent-strong) 75%, var(--ink)); }
-.p-next { background: color-mix(in srgb, var(--blue) 14%, transparent); color: var(--blue); }
-.p-polish { background: color-mix(in srgb, var(--purple) 14%, transparent); color: var(--purple); }
+.p-core { background: color-mix(in srgb, var(--accent) 25%, transparent); color: var(--core-text); }
+.p-next { background: color-mix(in srgb, var(--blue) 14%, transparent); color: var(--blue-text); }
+.p-polish { background: color-mix(in srgb, var(--purple) 14%, transparent); color: var(--purple-text); }
 .save-button { width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; background: transparent; color: var(--faint); cursor: pointer; }
-.save-button:hover, .save-button.saved { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent-strong); }
+.save-button:hover, .save-button.saved { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--core-text); }
 .save-button svg { width: 17px; }
 .card-main { flex: 1; padding: 18px 19px; border: 0; display: flex; flex-direction: column; align-items: flex-start; background: transparent; text-align: left; cursor: pointer; }
 .card-main h3 { margin: 0 0 9px; font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: -.025em; line-height: 1.25; }
@@ -191,8 +197,11 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .example p > span { width: 48px; display: inline-block; color: var(--faint); font-size: 9px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
 .example small { margin-top: 7px; display: block; color: var(--faint); }
 .note-dialog section.drill-box { margin-bottom: 0; padding: 19px 21px; border-radius: 15px; background: color-mix(in srgb, var(--accent) 17%, var(--surface)); }
-.drill-box small { color: var(--accent-strong); font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.drill-box small { color: var(--core-text); font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
 .drill-box p { margin: 5px 0 0; line-height: 1.55; }
+.note-dialog section.ear-link { margin: 14px 0 0; padding: 17px 19px; border: 1px solid var(--line); border-radius: 15px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.ear-link p { flex: 1 1 240px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.ear-link strong { display: block; color: var(--ink); font-size: 14px; }
 
 .playbook-heading { align-items: center; }
 .focus-badge { min-width: 220px; padding: 17px 19px; border: 1px solid var(--line); border-radius: 16px; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; background: var(--surface); }
@@ -208,8 +217,8 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .priority-lane { min-height: 260px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .priority-lane > span { display: inline-block; padding: 5px 8px; border-radius: 6px; font-size: 9px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
 .priority-lane.core > span { color: var(--accent-ink); background: var(--accent); }
-.priority-lane.next > span { color: var(--blue); background: color-mix(in srgb, var(--blue) 13%, transparent); }
-.priority-lane.polish > span { color: var(--purple); background: color-mix(in srgb, var(--purple) 13%, transparent); }
+.priority-lane.next > span { color: var(--blue-text); background: color-mix(in srgb, var(--blue) 13%, transparent); }
+.priority-lane.polish > span { color: var(--purple-text); background: color-mix(in srgb, var(--purple) 13%, transparent); }
 .priority-lane h3 { margin: 18px 0; font-size: 18px; }
 .priority-lane ul { margin: 0; padding: 0; display: grid; gap: 11px; list-style: none; }
 .priority-lane li { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; line-height: 1.4; }
@@ -230,7 +239,7 @@ svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .source-grid a { position: relative; min-height: 150px; padding: 21px; border: 1px solid var(--line); border-radius: 17px; display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; background: var(--surface); color: var(--ink); }
 .source-grid a:hover { border-color: var(--line-strong); }
-.source-grid a > span { color: var(--accent-strong); font-size: 9px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.source-grid a > span { color: var(--core-text); font-size: 9px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
 .source-grid a strong { max-width: 350px; margin: 14px 0 6px; font-size: 17px; }
 .source-grid a small { margin-top: auto; color: var(--faint); }
 .source-grid a svg { position: absolute; right: 18px; top: 18px; width: 15px; color: var(--faint); }
