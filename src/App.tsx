@@ -1,18 +1,21 @@
-import { BookOpen, Dumbbell, Library } from 'lucide-react';
+import { BookOpen, Dumbbell, Ear, Library } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Brand } from './components/Brand';
 import { NoteDialog } from './components/NoteDialog';
 import { ThemeToggle } from './components/ThemeToggle';
 import { getDailyDrill } from './content/drills';
+import { notes } from './content/notes';
 import type { PracticeNote } from './content/types';
 import { localDateKey, useLocalProgress } from './hooks/useLocalProgress';
+import { EarScreen } from './screens/EarScreen';
 import { LibraryScreen } from './screens/LibraryScreen';
 import { PlaybookScreen } from './screens/PlaybookScreen';
 import { TodayScreen } from './screens/TodayScreen';
 
-type View = 'today' | 'library' | 'playbook';
+type View = 'today' | 'ear' | 'library' | 'playbook';
 const views: { id: View; label: string; icon: typeof Dumbbell }[] = [
   { id: 'today', label: 'Practice', icon: Dumbbell },
+  { id: 'ear', label: 'Ear training', icon: Ear },
   { id: 'library', label: 'Notes', icon: Library },
   { id: 'playbook', label: 'Playbook', icon: BookOpen },
 ];
@@ -63,6 +66,7 @@ export default function App() {
       </header>
 
       {view === 'today' && <TodayScreen drill={dailyDrill} completed={completed} sessions={progress.completedSessions} onComplete={completeToday} />}
+      {view === 'ear' && <EarScreen onOpenNote={(id) => setOpenNote(notes.find((note) => note.id === id))} />}
       {view === 'library' && <LibraryScreen favorites={progress.favorites} onFavorite={toggleFavorite} onOpen={setOpenNote} />}
       {view === 'playbook' && <PlaybookScreen />}
 

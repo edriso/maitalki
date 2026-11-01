@@ -34,6 +34,14 @@ describe('MaiTalki app', () => {
     expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
   });
 
+  it('opens ear training from the navigation', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getAllByRole('button', { name: 'Ear training' })[0]);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Hear it before\s*you say it/);
+    expect(window.location.hash).toBe('#ear');
+  });
+
   it('persists the selected theme', async () => {
     const user = userEvent.setup();
     render(<App />);

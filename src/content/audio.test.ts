@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import manifest from './audio-manifest.json';
 import { availableVoices, clipUrl } from './audio';
+import { soundContrasts } from './contrasts';
 import { drills } from './drills';
 import { notes } from './notes';
 import { collectSpeechTexts } from './speech';
@@ -15,7 +16,7 @@ describe('model audio', () => {
   });
 
   it('has a clip for every displayed line in every voice (run `npm run audio` after content changes)', () => {
-    const texts = collectSpeechTexts({ drills, notes });
+    const texts = collectSpeechTexts({ drills, notes, contrasts: soundContrasts });
     for (const voice of availableVoices) {
       const missing = texts.filter((text) => !clipsByVoice[voice.key]?.[text]);
       expect(missing, `${voice.name} is missing clips`).toEqual([]);

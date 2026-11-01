@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { soundContrasts } from './contrasts';
 import { drills } from './drills';
 import { notes } from './notes';
 import { collectSpeechTexts, toSpeechText } from './speech';
@@ -34,7 +35,7 @@ describe('toSpeechText', () => {
   });
 
   it('never leaves coaching notation in spoken text', () => {
-    for (const text of collectSpeechTexts({ drills, notes })) {
+    for (const text of collectSpeechTexts({ drills, notes, contrasts: soundContrasts })) {
       expect(text).not.toMatch(/[↗↘·/ə]/);
       expect(text).not.toMatch(/\b(?!API\b)[A-Z]{2,}\b/);
     }

@@ -55,7 +55,11 @@ Daily drills in `src/content/drills.ts` must take ten minutes or less and contai
 
 Favor rotating skills over adding many variations of the same prompt.
 
-## 5. Regenerate model audio
+## 5. Add ear-training pairs only when they are unambiguous
+
+Minimal pairs live in `src/content/contrasts.ts`. Use common words that differ only in the target sound. Avoid homographs (bass, read, lead) and pairs that merge in some American accents (pin/pen). After adding pairs, run `npm run audio -- --verify`; if a word is heard as another word, add a retake in `scripts/audio-retakes.json`, and replace the pair if retakes keep failing.
+
+## 6. Regenerate model audio
 
 Every drill warm-up, model answer, and note example has model audio. After adding or editing one, run:
 
@@ -66,7 +70,7 @@ npm run audio
 
 Only new or changed lines are generated. Notation is converted to plain speech automatically; if a new line uses unusual notation, add a case to `src/content/speech.test.ts` and check `toSpeechText` reads it naturally. Listen to each new clip once before committing.
 
-## 6. Verify
+## 7. Verify
 
 Run:
 

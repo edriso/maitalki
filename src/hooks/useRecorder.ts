@@ -1,30 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
 
+export interface Take {
+  url: string;
+  seconds: number;
+}
+
+/** "One take. Then one better take." A third recording replaces the second take. */
+export const maxTakes = 2;
+const maxSeconds = 120;
+
 export function useRecorder() {
   const [status, setStatus] = useState<'idle' | 'recording' | 'ready' | 'denied'>('idle');
-  const [audioUrl, setAudioUrl] = useState<string>();
+  const [takes, setTakes] = useState<Take[]>([]);
   const [seconds, setSeconds] = useState(0);
+  const takesRef = useRef<Take[]>([]);
+  const secondsRef = useRef(0);
   const recorderRef = useRef<MediaRecorder | undefined>(undefined);
   const streamRef = useRef<MediaStream | undefined>(undefined);
   const chunksRef = useRef<Blob[]>([]);
 
+  const updateTakes = (next: Take[]) => {
+    takesRef.current = next;
+    setTakes(next);
+  };
+
   useEffect(() => {
     if (status !== 'recording') return;
-    const timer = window.setInterval(() => setSeconds((value) => {
-      const next = value + 1;
-      if (next >= 120 && recorderRef.current?.state === 'recording') {
-        recorderRef.current.stop();
-        return 120;
-      }
-      return next;
-    }), 1000);
+    const timer = window.setInterval(() => {
+      secondsRef.current = Math.min(maxSeconds, secondsRef.current + 1);
+      setSeconds(secondsRef.current);
+      if (secondsRef.current >= maxSeconds && recorderRef.current?.state === 'recording') recorderRef.current.stop();
+    }, 1000);
     return () => window.clearInterval(timer);
   }, [status]);
 
+  // Release the microphone and every take when the practice screen closes.
   useEffect(() => () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-  }, [audioUrl]);
+    takesRef.current.forEach((take) => URL.revokeObjectURL(take.url));
+  }, []);
 
   const start = async () => {
     try {
@@ -42,13 +56,14 @@ export function useRecorder() {
       });
       recorder.addEventListener('stop', () => {
         const blob = new Blob(chunksRef.current, { type: recorder.mimeType || 'audio/webm' });
-        setAudioUrl((previous) => {
-          if (previous) URL.revokeObjectURL(previous);
-          return URL.createObjectURL(blob);
-        });
+        const take = { url: URL.createObjectURL(blob), seconds: secondsRef.current };
+        const kept = takesRef.current.slice(0, maxTakes - 1);
+        takesRef.current.slice(maxTakes - 1).forEach((replaced) => URL.revokeObjectURL(replaced.url));
+        updateTakes([...kept, take]);
         stream.getTracks().forEach((track) => track.stop());
         setStatus('ready');
       });
+      secondsRef.current = 0;
       setSeconds(0);
       recorder.start();
       setStatus('recording');
@@ -58,14 +73,15 @@ export function useRecorder() {
   };
 
   const stop = () => recorderRef.current?.state === 'recording' && recorderRef.current.stop();
+
+  /** Clear both takes and start over. */
   const reset = () => {
-    setAudioUrl((previous) => {
-      if (previous) URL.revokeObjectURL(previous);
-      return undefined;
-    });
+    takesRef.current.forEach((take) => URL.revokeObjectURL(take.url));
+    updateTakes([]);
+    secondsRef.current = 0;
     setSeconds(0);
     setStatus('idle');
   };
 
-  return { status, audioUrl, seconds, start, stop, reset };
+  return { status, takes, seconds, start, stop, reset };
 }

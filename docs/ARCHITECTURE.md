@@ -6,7 +6,7 @@ The interface uses Atkinson Hyperlegible Next for controls and reading text, wit
 
 ## Application flow
 
-`App.tsx` owns the three hash-addressable views (`#today`, `#library`, and `#playbook`), theme, mobile navigation, and the selected note dialog. Screens compose typed content and reusable components.
+`App.tsx` owns the four hash-addressable views (`#today`, `#ear`, `#library`, and `#playbook`), theme, mobile navigation, and the selected note dialog. Screens compose typed content and reusable components.
 
 ```text
 content → screens → components
@@ -17,7 +17,10 @@ content → screens → components
 - `src/content/notes.ts` is the source of truth for the note library.
 - `src/content/drills.ts` is the source of truth for rotating daily practice.
 - `useLocalProgress` owns saved notes, completed days, and session count.
-- `useRecorder` owns the optional MediaRecorder lifecycle and temporary playback URL.
+- `src/content/contrasts.ts` is the source of truth for ear-training minimal pairs.
+- `useRecorder` owns the optional MediaRecorder lifecycle and up to two temporary takes; a third recording replaces take 2.
+- `earTraining.ts` builds ear-training rounds (every pair once before repeats, random word and voice) and stores the last result per contrast.
+- `ShadowCoach` runs three shadowing rounds on top of the shared model-audio player and stops cleanly when interrupted.
 - `useModelAudio` owns one shared audio element for model clips, so starting a clip stops any other. `useVoicePreference` stores the chosen model voice.
 
 ## Model audio
@@ -34,6 +37,7 @@ drills.ts + notes.ts ─ toSpeechText ─▶ scripts/generate-audio.ts ─▶ El
 - File names hash the spoken text, voice, model, and settings. Changing any of them creates new clips; the script deletes clips no longer referenced.
 - `src/content/voices.ts` lists the voices. The picker appears only when two or more voices have audio, and lines without a clip show no audio controls.
 - The ElevenLabs key is read from `.env.local` by the local script only. The deployed site serves static files and never contacts ElevenLabs.
+- `npm run audio -- --verify` sends single-word clips to ElevenLabs speech-to-text and flags any heard as a different word (known homophones excepted). A flagged clip gets a retake number in `scripts/audio-retakes.json`, which changes its seed and file name. Ear-training answers depend on these words, so verify after adding pairs.
 - Tests fail if any displayed line lacks a clip for an available voice, or if the manifest points to a missing file.
 
 ## Local state
@@ -49,7 +53,7 @@ drills.ts + notes.ts ─ toSpeechText ─▶ scripts/generate-audio.ts ─▶ El
 }
 ```
 
-`maitalki.theme` contains `light` or `dark`. `maitalki.voice` contains a voice key from `src/content/voices.ts`; unknown values fall back to the first voice. Recordings are Blob URLs held only in memory; leaving or refreshing the page removes them.
+`maitalki.theme` contains `light` or `dark`. `maitalki.ear.v1` maps a contrast id to its last `{ correct, total, date }`; malformed entries are ignored. `maitalki.voice` contains a voice key from `src/content/voices.ts`; unknown values fall back to the first voice. Recordings are Blob URLs held only in memory; leaving or refreshing the page removes them.
 
 Any schema change needs a migration or a new versioned key plus tests. Never silently reinterpret old data.
 

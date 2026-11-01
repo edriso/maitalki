@@ -50,13 +50,15 @@ const joinChunks = (chunks: string[], glue: string) =>
 interface SpeakableContent {
   drills: { warmup: string[]; model: string }[];
   notes: { examples: { after: string }[] }[];
+  contrasts: { pairs: [string, string][] }[];
 }
 
 /** Every line the app offers as model audio, in display order, as unique spoken text. */
-export function collectSpeechTexts({ drills, notes }: SpeakableContent): string[] {
+export function collectSpeechTexts({ drills, notes, contrasts }: SpeakableContent): string[] {
   const lines = [
     ...drills.flatMap((drill) => [...drill.warmup, drill.model]),
     ...notes.flatMap((note) => note.examples.map((example) => example.after)),
+    ...contrasts.flatMap((contrast) => contrast.pairs.flat()),
   ];
   return [...new Set(lines.map(toSpeechText))];
 }

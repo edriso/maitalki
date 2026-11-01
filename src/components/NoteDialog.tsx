@@ -2,6 +2,7 @@ import { Bookmark, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import type { PracticeNote } from '../content/types';
 import { ListenControls } from './ListenControls';
+import { ShadowCoach } from './ShadowCoach';
 import { VoicePicker } from './VoicePicker';
 
 interface Props {
@@ -40,7 +41,8 @@ export function NoteDialog({ note, favorite, onFavorite, onClose }: Props) {
           <p className="after"><span>{example.before ? 'Try' : 'Say'}</span>{example.after}</p>
           <ListenControls text={example.after} label={`example ${index + 1}`} />
           {example.note && <small>{example.note}</small>}
-        </div>)}</div></section>
+        </div>)}</div>
+        <ShadowCoach subject="these examples" lines={note.examples.map((example, index) => ({ text: example.after, label: `example ${index + 1}` }))} /></section>
         <section className="drill-box"><small>Practice now</small><p>{note.drill}</p></section>
       </div>}
     </dialog>

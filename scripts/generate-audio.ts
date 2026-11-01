@@ -5,6 +5,10 @@
  *   npm run audio -- --dry-run     show what would be generated and the credit estimate
  *   npm run audio -- --voice=eric  limit to one voice
  *   npm run audio -- --audition    write one sample per voice to .audio-auditions/
+ *   npm run audio -- --verify      transcribe single-word clips and flag any that sound like another word
+ *
+ * If a clip sounds wrong, add it to scripts/audio-retakes.json ({ "voice": { "Spoken text.": 1 } })
+ * and run again: the retake number changes the seed, so only that clip is regenerated.
  *
  * Files are named by a hash of the spoken text, voice, and settings, so re-running only
  * pays for new or changed lines. Every clip is leveled to the same loudness with ffmpeg so
@@ -18,6 +22,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, 
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { soundContrasts } from '../src/content/contrasts.ts';
 import { drills } from '../src/content/drills.ts';
 import { notes } from '../src/content/notes.ts';
 import { collectSpeechTexts } from '../src/content/speech.ts';
@@ -27,6 +32,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const audioDir = join(root, 'public', 'audio');
 const manifestPath = join(root, 'src', 'content', 'audio-manifest.json');
 const auditionDir = join(root, '.audio-auditions');
+const retakes = JSON.parse(readFileSync(join(root, 'scripts', 'audio-retakes.json'), 'utf8')) as Record<string, Record<string, number>>;
 const apiBase = 'https://api.elevenlabs.io/v1';
 
 /** Generation settings. Any change produces new file hashes and regenerates every clip. */
@@ -64,6 +70,7 @@ const args = new Set(process.argv.slice(2));
 const voiceArg = process.argv.find((arg) => arg.startsWith('--voice='))?.split('=')[1];
 const dryRun = args.has('--dry-run');
 const audition = args.has('--audition');
+const verify = args.has('--verify');
 
 const fail = (message: string): never => {
   console.error(`\n✖ ${message}\n`);
@@ -105,8 +112,13 @@ function levelLoudness(mp3: Buffer): Buffer {
   }
 }
 
-const clipHash = (voice: ModelVoice, text: string) =>
-  createHash('sha256').update(JSON.stringify({ text, voiceId: voice.voiceId, ...generation })).digest('hex').slice(0, 16);
+const retakeFor = (voice: ModelVoice, text: string) => retakes[voice.key]?.[text] ?? 0;
+
+const clipHash = (voice: ModelVoice, text: string) => {
+  const retake = retakeFor(voice, text);
+  const identity = { text, voiceId: voice.voiceId, ...generation, ...(retake ? { retake } : {}) };
+  return createHash('sha256').update(JSON.stringify(identity)).digest('hex').slice(0, 16);
+};
 
 const readManifest = (): Manifest => {
   if (!existsSync(manifestPath)) return { generatedWith: generation, voices: {} };
@@ -130,7 +142,7 @@ async function synthesize(apiKey: string, voice: ModelVoice, text: string): Prom
     text,
     model_id: generation.modelId,
     voice_settings: generation.voiceSettings,
-    seed: generation.seed,
+    seed: generation.seed + retakeFor(voice, text),
     apply_text_normalization: 'auto',
   });
 
@@ -164,6 +176,38 @@ async function remainingCredits(apiKey: string): Promise<number | undefined> {
   }
 }
 
+/** Words a transcriber may legitimately write differently (homophones), keyed by the intended word. */
+const homophones: Record<string, string[]> = {
+  fill: ['phil'], fin: ['finn'], sink: ['sync', 'cinq'], led: ['lead'], shoe: ['shoo'], which: ['witch'], mass: ['mas'], tin: ['tim'],
+};
+
+/** Transcribe every single-word clip and report words that come back as a different word. */
+async function verifyWords(apiKey: string, voices: ModelVoice[], texts: string[]) {
+  const words = texts.filter((text) => /^[A-Z][a-z]+\.$/.test(text));
+  const problems: string[] = [];
+  for (const voice of voices) {
+    for (const text of words) {
+      const file = join(audioDir, voice.key, `${clipHash(voice, text)}.mp3`);
+      if (!existsSync(file)) continue;
+      const form = new FormData();
+      form.append('model_id', 'scribe_v1');
+      form.append('language_code', 'en');
+      form.append('tag_audio_events', 'false');
+      form.append('file', new Blob([readFileSync(file)], { type: 'audio/mpeg' }), 'clip.mp3');
+      const response = await fetch(`${apiBase}/speech-to-text`, { method: 'POST', headers: { 'xi-api-key': apiKey }, body: form });
+      if (!response.ok) fail(`Speech-to-text failed (${response.status}). The key needs Speech to Text permission for --verify.`);
+      const heard = ((await response.json()) as { text: string }).text.toLowerCase().replace(/[^a-z]/g, '');
+      const intended = text.slice(0, -1).toLowerCase();
+      if (heard !== intended && !homophones[intended]?.includes(heard)) problems.push(`  ${voice.name}: "${intended}" was heard as "${heard}"`);
+    }
+  }
+  console.log(`Verified ${words.length * voices.length} word clips.`);
+  if (problems.length) {
+    console.log(`${problems.length} may sound like another word:\n${problems.join('\n')}\nAdd them to scripts/audio-retakes.json and run again.`);
+    process.exitCode = 1;
+  }
+}
+
 /** Run tasks with a small concurrency limit (the free plan allows few concurrent requests). */
 async function runPool<T>(items: T[], limit: number, task: (item: T) => Promise<void>) {
   const queue = [...items];
@@ -189,7 +233,7 @@ async function main() {
     return;
   }
 
-  const texts = collectSpeechTexts({ drills, notes });
+  const texts = collectSpeechTexts({ drills, notes, contrasts: soundContrasts });
   const manifest = readManifest();
   const plan = voices.map((voice) => {
     const missing = texts.filter((text) => !existsSync(join(audioDir, voice.key, `${clipHash(voice, text)}.mp3`)));
@@ -247,6 +291,8 @@ async function main() {
 
   writeManifest(manifest);
   console.log('✓ Manifest updated: src/content/audio-manifest.json');
+
+  if (verify) await verifyWords(loadApiKey(), voices, texts);
 }
 
 await main();

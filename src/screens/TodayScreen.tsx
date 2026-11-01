@@ -2,8 +2,10 @@ import { Check, ChevronLeft, ChevronRight, CircleStop, Mic, RotateCcw, Sparkles 
 import { useState } from 'react';
 import type { DailyDrill } from '../content/types';
 import { ListenControls } from '../components/ListenControls';
+import { ShadowCoach } from '../components/ShadowCoach';
 import { VoicePicker } from '../components/VoicePicker';
-import { useRecorder } from '../hooks/useRecorder';
+import { pauseOtherMedia, stopClip } from '../hooks/useModelAudio';
+import { maxTakes, useRecorder } from '../hooks/useRecorder';
 
 interface Props {
   drill: DailyDrill;
@@ -48,6 +50,7 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
             <p>{line}</p>
             <ListenControls text={line} label={`warm-up line ${index + 1}`} />
           </div>)}</div>
+          <ShadowCoach subject="the warm-up lines" lines={drill.warmup.map((line, index) => ({ text: line, label: `warm-up line ${index + 1}` }))} />
           <div className="coach-note"><Sparkles /><p><strong>Keep this in mind</strong>Clarity before speed. Let the important words carry the sentence.</p></div>
         </div>}
 
@@ -70,8 +73,20 @@ export function TodayScreen({ drill, completed, sessions, onComplete }: Props) {
           <div className={`recorder ${recorder.status}`}>
             <div className="record-orbit"><span>{recorder.status === 'recording' ? `${recorder.seconds}s` : <Mic />}</span></div>
             {recorder.status === 'idle' && <><h3>Record your first take</h3><p>Up to two minutes. It stays in this browser and disappears when you leave.</p><button className="primary-button" onClick={recorder.start}><Mic /> Start recording</button></>}
-            {recorder.status === 'recording' && <><h3>Recording…</h3><p>Finish the thought. A clean pause is allowed.</p><button className="stop-button" onClick={recorder.stop}><CircleStop /> Stop</button></>}
-            {recorder.status === 'ready' && <><h3>Listen for one improvement</h3>{recorder.audioUrl && <audio controls src={recorder.audioUrl}>Your browser does not support audio playback.</audio>}<div className="compare-model"><p>Compare your rhythm with the model, then record one better take.</p><ListenControls text={drill.model} label="the model answer" /></div><button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Record again</button></>}
+            {recorder.status === 'recording' && <><h3>Recording take {Math.min(recorder.takes.length + 1, maxTakes)}…</h3><p>Finish the thought. A clean pause is allowed.</p><button className="stop-button" onClick={recorder.stop}><CircleStop /> Stop</button></>}
+            {recorder.status === 'ready' && <>
+              <h3>{recorder.takes.length === 1 ? 'Listen for one improvement' : 'Compare your two takes'}</h3>
+              <p>{recorder.takes.length === 1 ? 'Play your take, then the model. Pick one thing to change: a pause, a stressed word, or a shorter answer.' : 'Which one is easier to follow? Listen for clean pauses and the stressed words.'}</p>
+              <div className="takes">{recorder.takes.map((take, index) => <div className="take" key={take.url}>
+                <span>Take {index + 1}<small>{take.seconds}s</small></span>
+                <audio controls preload="metadata" src={take.url} onPlay={(event) => { stopClip(); pauseOtherMedia(event.currentTarget); }}>Your browser does not support audio playback.</audio>
+              </div>)}</div>
+              <div className="compare-model"><p>The model answer</p><ListenControls text={drill.model} label="the model answer" /></div>
+              <div className="take-actions">
+                <button className="primary-button" onClick={recorder.start}><Mic /> {recorder.takes.length === 1 ? 'Record a better take' : 'Re-record take 2'}</button>
+                {recorder.takes.length === maxTakes && <button className="secondary-button" onClick={recorder.reset}><RotateCcw /> Start over</button>}
+              </div>
+            </>}
             {recorder.status === 'denied' && <><h3>Recording is unavailable</h3><p>Allow microphone access, or use your phone’s recorder. You can still complete the practice.</p><button className="secondary-button" onClick={recorder.start}><Mic /> Try again</button></>}
           </div>
         </div>}
