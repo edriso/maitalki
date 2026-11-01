@@ -1,25 +1,35 @@
 # MaiTalki
 
-A focused personal practice space for clearer English, natural rhythm, concise answers, and customer-first sales conversations.
+A focused personal practice space for clearer English, natural rhythm, concise answers, and customer-first sales conversations. Prepare a short answer, hear a natural model, say it, compare, and stop—in under ten minutes a day.
 
 Live site: [edriso.github.io/maitalki](https://edriso.github.io/maitalki/)
 
 ## What it does
 
-- Rotates a complete 6–8 minute practice each day, with twelve practices across sounds, rhythm, speaking, and sales
-- Guides planning with three bullets instead of a script
-- Records two private takes in the browser so you can compare them with each other and the model
-- Plays natural American model audio for warm-ups, model answers, and note examples, with a slower option and two voices
-- Guides shadowing in three rounds: listen slowly and repeat, listen and repeat, then speak along
-- Trains your ear on minimal pairs (I/E, CH/SH, TH) with both voices and instant feedback—listening practice, not a pronunciation score
-- Organizes lesson notes by impact: Core, Next, and Polish
-- Searches and saves notes locally
-- Turns the original sales notes into a five-step GAP conversation playbook
-- Offers one optional saved note to revisit after you finish—never a streak or a guilt prompt
-- Works offline after the first visit: the app and any audio you have played are cached on your device
-- Supports light/dark themes, keyboard navigation, reduced motion, and small screens
+**Daily practice**
 
-No account or server is involved. Theme, voice, saved notes, ear-training results, and completion history stay in local storage. Your recordings are temporary object URLs and are never uploaded. Model audio is pre-generated MP3 files served with the site; nothing plays until you press Listen.
+- Rotates a complete 6–8 minute practice each day, twelve in all, across sounds, rhythm, speaking, and sales
+- Warms up with stress-marked lines, then plans the answer as three bullets instead of a script
+- Records two private takes so you can compare them with each other and with the model answer
+- Ends with a short self-review checklist and, optionally, one saved note to revisit—never a streak or a guilt prompt
+
+**Listening**
+
+- Natural American model audio (two voices, Sarah and Eric) for every warm-up, model answer, and note example, with a pitch-preserving **Slower** option
+- Shadowing in three guided rounds: listen slowly and repeat, listen and repeat, then speak along
+- Ear training on minimal pairs (I/E, CH/SH, TH) with both voices, instant feedback, and missed pairs to replay—a listening check, not a pronunciation score
+
+**Notes and playbook**
+
+- Lesson notes organized by impact (Core, Next, Polish), searchable and saveable; the I/E, CH/SH, and TH notes link straight to ear training
+- A five-step GAP conversation playbook for customer-first sales calls
+
+**Private, accessible, offline**
+
+- No account or server. Theme, voice, saved notes, ear-training results, and completion history stay in local storage
+- Recordings are temporary in-memory URLs and are never uploaded; nothing plays until you press a button
+- Works offline after the first visit and installs to a phone’s home screen
+- Light and dark themes, keyboard navigation, visible focus, reduced motion, and layouts down to 320 px; checked against WCAG 2.2 AA with axe
 
 ## Start locally
 
@@ -30,50 +40,61 @@ npm ci
 npm run dev
 ```
 
-Quality gate:
+Quality gate (ESLint, Vitest, TypeScript, and the production build):
 
 ```bash
 npm run check
 ```
 
-This runs ESLint, Vitest, TypeScript, and the production Vite build.
+## Model audio (ElevenLabs)
 
-### Model audio (ElevenLabs)
+Generated clips are committed, so you only need this after changing drill warm-ups, model answers, note examples, or ear-training pairs.
 
-The generated clips are committed, so you only need this after changing drills or note examples.
+**Requirements**
 
-1. Create an ElevenLabs API key restricted to **Text to Speech** and **Voices (read)**, with a credit limit. Copy the secret that starts with `sk_`, not the key ID.
-2. Copy `.env.example` to `.env.local` and set `ELEVENLABS_API_KEY`.
-3. Generate, then verify:
+- An ElevenLabs API key restricted to **Text to Speech** and **Voices (read)**, plus **Speech to Text** if you use `--verify`. Give it a credit limit, and copy the secret that starts with `sk_`, not the key ID.
+- `ffmpeg` on your PATH (macOS: `brew install ffmpeg`), used to level every clip to the same loudness.
+
+**Setup**
 
 ```bash
-npm run audio -- --dry-run   # what would be generated, and the credit cost
+cp .env.example .env.local   # then set ELEVENLABS_API_KEY
+```
+
+**Generate**
+
+```bash
+npm run audio -- --dry-run   # what would be generated, and the character count
 npm run audio                # generate only new or changed lines
-npm run audio -- --verify    # transcribe single-word clips to catch ones that sound like another word
-npm run check
+npm run audio -- --verify    # transcribe single-word clips; flags any heard as another word
+npm run check                # tests fail if any line is missing its clip
 ```
 
-`.env.local` is git-ignored. The key is used by the local script only and never ships to the site, so never prefix it with `VITE_`. Voices live in `src/content/voices.ts`; `npm run audio -- --audition` writes a short sample per voice to `.audio-auditions/` for comparing before a full run. Model audio is generated with [ElevenLabs](https://elevenlabs.io).
+Other options: `--voice=eric` limits a run to one voice, and `--audition` writes a short sample per voice to `.audio-auditions/`. If a clip sounds wrong, add it to `scripts/audio-retakes.json` and run again; only that clip is regenerated.
+
+`.env.local` is git-ignored. The key is used by the local script only and never ships to the site, so never prefix it with `VITE_`. Voices are configured in `src/content/voices.ts`. Model audio is generated with [ElevenLabs](https://elevenlabs.io).
 
 ## Project map
 
 ```text
 src/
-  components/   Reusable UI and note presentation
-  content/      Typed practice notes and daily drills
-  hooks/        Local progress, private recording, and model audio playback
-  screens/      Practice, ear training, notes library, and playbook
-  test/         Browser test setup
-public/audio/   Generated model audio (one folder per voice)
-scripts/        Local audio generation (ElevenLabs)
-docs/           Architecture, curriculum, content, and deployment
+  components/    Listen controls, shadowing coach, voice picker, notes
+  content/       Notes, daily drills, ear-training pairs, voices, speech text, audio manifest
+  hooks/         Progress, recording takes, model audio player, ear-training rounds
+  screens/       Practice, ear training, notes library, and playbook
+  test/          Browser test setup
+public/
+  audio/         Generated model audio, one folder per voice
+  sw.js          Offline service worker
+scripts/         Local audio generation, verification, and retakes
+docs/            Architecture, curriculum, content, and deployment
 ```
 
 Before changing content, read [the content guide](docs/CONTENT_GUIDE.md). For larger changes, read [the architecture](docs/ARCHITECTURE.md) and [curriculum notes](docs/CURRICULUM.md).
 
 ## Deployment
 
-Every push to `main` runs the complete quality gate and deploys `dist` through GitHub Actions. See [deployment](docs/DEPLOYMENT.md).
+Every push to `main` runs the complete quality gate and deploys `dist` to GitHub Pages through GitHub Actions. See [deployment](docs/DEPLOYMENT.md).
 
 ## License
 

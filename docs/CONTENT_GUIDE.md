@@ -1,6 +1,6 @@
-# Adding future notes
+# Adding content
 
-Do this after each lesson while the feedback is still fresh.
+How to turn a lesson into notes, daily drills, ear-training pairs, and model audio. Do this after each lesson while the feedback is still fresh.
 
 ## 1. Capture privately
 
@@ -61,14 +61,14 @@ Minimal pairs live in `src/content/contrasts.ts`. Use common words that differ o
 
 ## 6. Regenerate model audio
 
-Every drill warm-up, model answer, and note example has model audio. After adding or editing one, run:
+Every drill warm-up, model answer, note example, and ear-training word has model audio. After adding or editing one, run:
 
 ```bash
 npm run audio -- --dry-run
 npm run audio
 ```
 
-Only new or changed lines are generated. Notation is converted to plain speech automatically; if a new line uses unusual notation, add a case to `src/content/speech.test.ts` and check `toSpeechText` reads it naturally. Listen to each new clip once before committing.
+Only new or changed lines are generated, and `npm run check` fails until every line has a clip in every voice. See the README for key and `ffmpeg` requirements. Notation is converted to plain speech automatically; if a new line uses unusual notation, add a case to `src/content/speech.test.ts` and check `toSpeechText` reads it naturally. Listen to each new clip once before committing.
 
 ## 7. Verify
 
@@ -78,4 +78,8 @@ Run:
 npm run check
 ```
 
-Then check the new note in both themes and at a narrow phone width. Search for its tags, open the dialog, save it, refresh, and confirm it remains saved.
+Then check the new content in both themes and at a narrow phone width:
+
+- search for a new note’s tags, open the dialog, play an example, save it, refresh, and confirm it remains saved;
+- for a new drill, play each warm-up line and the model answer, and run the shadowing rounds once;
+- for new pairs, run one ear-training round with that sound.

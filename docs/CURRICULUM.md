@@ -37,6 +37,15 @@ This is reinforced by Salesforce guidance on [clarifying and confirming question
 
 The rhythm guidance is consistent with the U.S. Department of State’s overview of [thought groups, focus words, and stress](https://americanenglish.state.gov/files/ae/resource_files/etf_58_2_pg02-13.pdf). The use of deliberate silence is reinforced by Toastmasters’ guidance on [pauses for clarity and emphasis](https://www.toastmasters.org/magazine/magazine-issues/2019/july/silence-is-golden).
 
+## Listening practice
+
+Two listening features support the speaking work, each chosen for evidence rather than novelty:
+
+- **Ear training** uses high-variability phonetic training: short rounds of minimal pairs, several voices, and immediate feedback. Meta-analyses find it reliably improves L2 perception, with [partial support for gains in production](https://www.cambridge.org/core/product/E38D8F5CE65DC708137B0E95F97C6BC7). The sets follow the Core sound priorities (I/E, CH/SH) plus TH.
+- **Shadowing** moves from careful to natural: listen slowly and repeat, listen and repeat, then speak along. A [systematic review](https://ora.ox.ac.uk/objects/uuid:3104cae1-3a6b-400a-b173-de44384238d2) found shadowing can improve comprehensibility, fluency, and prosody, though most studies are small.
+
+Neither feature grades pronunciation. Ear training counts what you heard; shadowing and the two recorded takes leave the judgment to you.
+
 ## Product boundaries
 
 - “American” labels a specific pronunciation target; it is not presented as superior English.

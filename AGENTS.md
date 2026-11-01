@@ -13,12 +13,12 @@ MaiTalki is a small, personal speaking-practice app. Protect its focus: every fe
 ## Quality bar
 
 - Use strict TypeScript and semantic HTML. Controls must be keyboard accessible and usable at 320 CSS px and 200% zoom.
-- Never claim to score pronunciation or remove an accent. Prefer “clearer,” “more natural,” and “speaking practice.”
+- Never claim to score pronunciation or remove an accent. Prefer “clearer,” “more natural,” and “speaking practice.” Ear-training results are listening checks; keep that framing.
 - Stress cannot be conveyed by color alone; preserve capitals, weight, arrows, slashes, or explanatory text.
 - Use `--font-ui` for controls and reading text and `--font-display` only for headings. Do not introduce another font family without a measured readability need.
 - Recording must remain optional and local. Never autoplay audio or upload a recording.
-- Model audio is pre-generated with `npm run audio` and committed to `public/audio`. Never call ElevenLabs from the browser or CI, and never expose the API key with a `VITE_` prefix. After editing drills or note examples, regenerate audio before committing.
-- Maintain both themes, WCAG AA contrast, visible focus, and `prefers-reduced-motion` support.
+- Model audio is pre-generated with `npm run audio` and committed to `public/audio`. Never call ElevenLabs from the browser or CI, and never expose the API key with a `VITE_` prefix. After editing drills, note examples, or ear-training pairs, regenerate audio (and `--verify` new pairs) before committing.
+- Maintain both themes, WCAG AA contrast, visible focus, and `prefers-reduced-motion` support. Use the `--*-text` color tokens for small colored text, never accent fills.
 - Keep daily practice below ten minutes and make completion a stopping point, not a guilt mechanic.
 - Run `npm run check` before every commit.
 - Do not add AI attribution, co-author trailers, generated signatures, or personal contact information to commits or product copy.

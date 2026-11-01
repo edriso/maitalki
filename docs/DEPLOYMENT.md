@@ -20,7 +20,29 @@ npm run check
 npm run preview
 ```
 
-Open the preview URL with `/maitalki/`. Verify all four hash views, a direct refresh, both themes, a saved note, model audio (Listen, Slower, and switching voices), an ear-training round, shadowing, two recorded takes, denied microphone access, and a completed practice.
+Open the preview URL with `/maitalki/`. Verify:
+
+- all four hash views, a direct refresh, and both themes;
+- model audio: Listen, Slower, switching voices, and shadowing;
+- an ear-training round, including the link from a sound note;
+- two recorded takes, and denied microphone access;
+- a saved note, and a completed practice with the optional revisit.
+
+## What ships
+
+`dist` is static: the app, self-hosted fonts, the service worker, icons, and the model audio in `public/audio`. Audio is generated locally (`npm run audio`) and committed, so CI needs no ElevenLabs key and never calls the API.
+
+## Offline
+
+The service worker (`public/sw.js`) registers only in production builds, so test it with `npm run preview`: load the app, reload once, play a clip, then switch the browser to offline and reload. The app should open and the played clip should still play.
+
+## Icons
+
+`public/icon.svg` is the source. `apple-touch-icon.png` (180 px), `icon-192.png`, and `icon-512.png` are full-bleed square renders of it, with no transparency and the glyph inside the maskable safe zone. Regenerate them if the SVG changes.
+
+## Dependencies
+
+`package.json` `overrides` pin `rolldown` and `postcss` (Vite’s bundler dependencies) to releases at least two weeks old. When upgrading Vite, update or remove these pins in the same change, and prefer releases that have been public for two weeks or more.
 
 ## Rename or custom domain
 
@@ -31,10 +53,8 @@ If the repository name changes, update:
 - `start_url` and `scope` in `public/manifest.webmanifest`;
 - URLs in this document and `README.md`.
 
-Model audio in `public/audio` is generated locally (`npm run audio`) and committed, so CI needs no ElevenLabs key and never calls the API. Vite copies it into `dist`.
+The service worker derives its scope from where it is registered, so it needs no change.
 
-The service worker (`public/sw.js`) only registers in production builds, so test offline behavior with `npm run preview`: load the app, reload once, then switch the browser to offline and reload again.
+## Roll back
 
-App icons: `public/icon.svg` is the source. `apple-touch-icon.png` (180 px), `icon-192.png`, and `icon-512.png` are full-bleed square renders of it (no transparency, glyph inside the maskable safe zone); regenerate them if the SVG changes.
-
-Do not edit or commit generated `dist`. To roll back, revert the offending commit and push; the workflow will redeploy the previous source.
+Do not edit or commit generated `dist`. To roll back, revert the offending commit and push; the workflow redeploys the previous source.
